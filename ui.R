@@ -19,18 +19,39 @@ shinyUI(fluidPage(
                   # conditionalPanel("!is.null(output.the_df)", 
                   #                  numericInput("col_number", "Enter the column number of the column containing the time series:", 1)
                   #                  )
-                  numericInput("col_number", "Enter the column number of the column containing the time series:", 1),
-                  radioButtons("radio", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1),
+                  actionButton("enter_upload", "Process Upload"),
+                  conditionalPanel("input.enter_upload",
+                                   numericInput("col_number", "Enter the column number of the column containing the time series:", 1)
+                                   ),
+                  # numericInput("col_number", "Enter the column number of the column containing the time series:", 1),
+                  conditionalPanel("input.enter_upload",
+                                   radioButtons("radio", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1)           
+                  ),
+                  # radioButtons("radio", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1),
                   conditionalPanel("input.radio == 2 ",
                                    dateInput('date',label = 'Enter beginning date',value = Sys.Date())
                                    # textOutput('radio_value')
                   ),
-                  radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
-                  sliderInput("lambda", label = "Choose the parameter lambda", min = 1, 
-                              max = 100, value = 5),
-                  sliderInput("delta", label = "Choose the parameter delta", min = 0, 
-                              max = 20, value = 3),
-                  actionButton("goButton", "Enter")
+                  # conditionalPanel("input.enter_upload",
+                  #                  radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1)
+                  # ),
+                  # radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
+                  conditionalPanel("input.enter_upload",
+                                   radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
+                                   sliderInput("lambda", label = "Choose the parameter lambda", min = 1, 
+                                               max = 100, value = 5),
+                                   sliderInput("delta", label = "Choose the parameter delta", min = 0, 
+                                               max = 20, value = 3),
+                                   actionButton("goButton", "Find the Anomalies"),
+                                   actionButton("reset", "Reset")
+                  )
+                  # conditionalPanel("input.enter_upload",
+                  # )
+                  # sliderInput("lambda", label = "Choose the parameter lambda", min = 1, 
+                  #             max = 100, value = 5),
+                  # sliderInput("delta", label = "Choose the parameter delta", min = 0, 
+                  #             max = 20, value = 3),
+                  # actionButton("goButton", "Enter")
                   
                   
             ),
@@ -38,12 +59,12 @@ shinyUI(fluidPage(
 
             mainPanel(
                   # h3(textOutput("caption", container = span)),
-                  h4(textOutput("error1", container = span)), 
-                  h4(textOutput("error2", container = span)), 
-                  # tableOutput('the_df')
+                  h4(textOutput("error", container = span)), 
+                  # h4(textOutput("error2", container = span)), 
+                  # tableOutput('df')
                   p(textOutput("ts_entries")),
                   h4(textOutput("error3", container = span)),
-                  p(textOutput('added1')),
+                  # p(textOutput('added1')),
                   h2(textOutput("tester", container=span)),
                   plotOutput('p1')
             )
