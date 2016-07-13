@@ -1,41 +1,24 @@
 
-# dateInput('date',label = 'Date input: yyyy-mm-dd',value = Sys.Date()),
-# textInput("caption", "Graph's Caption:", "X Time Series Anomaly Detection"),
-# radioButtons("time_r", label = h3("Unit of time"),
-#              choices = list("Days" = 1, "Generic" = 2), 
-#              selected = 1),
-# 
-#fileInput('the_file', 'Upload csv file',accept=c('.csv'))
-
 shinyUI(fluidPage(
       
       titlePanel("CAD Anomaly Detection"),
       sidebarLayout(
             sidebarPanel(
                    
-                  # textInput("caption", "Enter the Graph's Title:", "X Time Series Anomaly Detection"),
 
                   fileInput('the_file', 'Upload the csv file containing the time series  ',accept=c('.csv')),
-                  # conditionalPanel("!is.null(output.the_df)", 
-                  #                  numericInput("col_number", "Enter the column number of the column containing the time series:", 1)
-                  #                  )
+                
                   actionButton("enter_upload", "Process Upload"),
                   conditionalPanel("input.enter_upload",
                                    numericInput("col_number", "Enter the column number of the column containing the time series:", 1)
                                    ),
-                  # numericInput("col_number", "Enter the column number of the column containing the time series:", 1),
                   conditionalPanel("input.enter_upload",
                                    radioButtons("radio", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1)           
                   ),
-                  # radioButtons("radio", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1),
                   conditionalPanel("input.radio == 2 ",
                                    dateInput('date',label = 'Enter beginning date',value = Sys.Date())
-                                   # textOutput('radio_value')
                   ),
-                  # conditionalPanel("input.enter_upload",
-                  #                  radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1)
-                  # ),
-                  # radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
+              
                   conditionalPanel("input.enter_upload",
                                    radioButtons("radio2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
                                    sliderInput("lambda", label = "Choose the parameter lambda", min = 1, 
@@ -45,40 +28,23 @@ shinyUI(fluidPage(
                                    actionButton("goButton", "Find the Anomalies"),
                                    actionButton("reset", "Reset")
                   )
-                  # conditionalPanel("input.enter_upload",
-                  # )
-                  # sliderInput("lambda", label = "Choose the parameter lambda", min = 1, 
-                  #             max = 100, value = 5),
-                  # sliderInput("delta", label = "Choose the parameter delta", min = 0, 
-                  #             max = 20, value = 3),
-                  # actionButton("goButton", "Enter")
-                  
-                  
             ),
             
 
             mainPanel(
-                  # h3(textOutput("caption", container = span)),
                   h4(textOutput("error", container = span)), 
-                  # h4(textOutput("error2", container = span)), 
-                  # tableOutput('df')
                   p(textOutput("ts_entries")),
-                  h4(textOutput("error3", container = span)),
-                  # p(textOutput('added1')),
-                  h2(textOutput("tester", container=span)),
-                  plotOutput('p1')
+                  plotOutput('p1'),
+                  # tableOutput('the_df'),
+    
+                  h4(textOutput("upper_anomalies1", container = span)),
+                  p(textOutput("upper_anomalies2", container = span)),
+                  h4(textOutput("lower_anomalies1", container = span)),
+                  p(textOutput("lower_anomalies2", container = span))
+                  # h2(textOutput("tester", container=span))
+                  
             )
       )
 
-      # column(5,
-      #        "The plot below will be not displayed when the slider value",
-      #        "is less than 50.",
-      #        
-      #        # With the conditionalPanel, the condition is a JavaScript
-      #        # expression. In these expressions, input values like
-      #        # input$n are accessed with dots, as in input.n
-      #        conditionalPanel("input.n >= 50",
-      #                         plotOutput("scatterPlot", height = 300)
-      #        )
-      # )
+
 ))
