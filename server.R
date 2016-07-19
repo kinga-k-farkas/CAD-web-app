@@ -13,7 +13,7 @@ source("find_intervals_function.R")
 source("df_maker_function3.R")
 source("plotter_g1_function.R")
 shinyServer( 
-  function(input, output) {
+  function(input, output, session) {
 
         v <- reactiveValues(go = NULL, the_df=NULL, the_ts = NULL, 
                             the_ts_name=NULL, ready=0, error="blank")
@@ -79,7 +79,24 @@ shinyServer(
       the_results<-reactive({
             if (is.null(v$go)) return()
             if (v$ready==0) return()
+            # withProgress(message = 'Searching for the anomalies    ', detail = 'This may take a while...', max = 100, value = 0, {
+            #       for (i in 1:35) {
+            #             # incProgress(1/35, detail = paste("progress", i))
+            #             setProgress(1)
+            #             Sys.sleep(0.1)
+            #       }
+            # })
+            # 
+            beginning<-Sys.time()
+            Sys.sleep(2)
             cad(v$the_ts, type="upper",delta=d(), lambda=l(),  main_title="The Time Series with Anomalies in Red")
+      })
+      
+      output$current_time <- renderText({
+            if (is.null(v$go)) return()
+            if (v$ready==0) return()
+            # invalidateLater(1000, session)
+            paste("The elapsed time is:",  Sys.time() - beginning )
       })
 
       # output$df<-renderTable({
@@ -108,7 +125,13 @@ shinyServer(
       output$p1 <- renderPlot({
             if (is.null(v$go)) return()
             if (v$ready==0) return()
+            if (the_results()$no_solution) return()
+            # withProgress(message = 'Creating plot', value = 0, {
+            #       Sys.sleep(0.04)
+            #       incProgress(0.003)
+            #       })
             plotter_g1(the_results()$x1, caption=v$the_ts_name)
+
  
 
             # plotter1(v$the_ts, d=d(), l=l(),type1=tp(), type2= date_type(), caption=v$the_ts_name)
@@ -132,7 +155,14 @@ shinyServer(
       })
       output$tester <-renderText({
             if (v$ready==0 ) return()
-            unique(the_results()$x1$index)
+            as.character(the_results()$no_solution)
+      })
+      output$no_solution <-renderText({
+            if (v$ready==0 ) return()
+            if (is.null(v$go)) return()
+            if (the_results()$no_solution) return("No training set could be found, so CAD could not do a search for the anomalies.")
+            return( "There should be a solution.")
+            
       })
       output$upper_anomalies1<-renderText({
             if (is.null(v$the_df)) return(NULL)
@@ -165,6 +195,7 @@ shinyServer(
             if (is.null(the_results)) return(NULL)
             if (is.null(the_results()$x5)) return(NULL)
             return(the_results()$x5)
+
 
       })
 })

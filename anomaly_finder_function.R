@@ -17,8 +17,9 @@ anomaly_finder <- function(time_series,type,delta,lambda,i){
       source("evaluate_cusum_results_function.R")
       #source("cusum_interpreter_function2.R")
       training_data_object <- training_data_finder(time_series)
-      if (length(training_data_object$training_data) == 0) {
+      if (training_data_object$no_solution) {
             print("This method cannot be applied to this particular time series.")
+            return(list(upper=NULL, lower=NULL, no_training_set=TRUE))
       }
       else {
             
@@ -98,7 +99,7 @@ anomaly_finder <- function(time_series,type,delta,lambda,i){
 #            
 #            axis(1, at=tick_marks, labels=df$index[labs])
 #            dev.off()
-            return(list(upper=upper_anomaly, lower=lower_anomaly))
+            return(list(upper=upper_anomaly, lower=lower_anomaly, no_training_set=FALSE))
             
       }
 }

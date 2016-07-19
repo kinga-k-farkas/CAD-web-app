@@ -1,7 +1,7 @@
 
 shinyUI(fluidPage(
       
-      titlePanel("CAD Anomaly Detection"),
+      titlePanel(tags$div("CAD Anomaly Detection",id="main_title")),
       sidebarLayout(
             sidebarPanel(
                    
@@ -28,20 +28,58 @@ shinyUI(fluidPage(
                                    actionButton("goButton", "Find the Anomalies"),
                                    actionButton("reset", "Reset")
                   )
+                  
+                  
             ),
             
 
             mainPanel(
+                  tags$head(
+                        tags$link(
+                              rel = "stylesheet", 
+                              href="http://fonts.googleapis.com/css?family=Monda"
+                        ),
+                 tags$style(type="text/css", "
+                        #loadmessage {
+                         position: fixed;
+                         top: 100px;
+                         left: 350px;
+                         width: 50%;
+                        padding: 5px 0px 5px 0px;
+                        text-align: center;
+                        font-weight: Bold;
+                        font-size: 200%;
+                        color: #2e73b8;
+                        # background-color: #f2db0d;
+                        z-index: 105;
+             }, 
+                        #main_title {
+                         position: fixed;
+                         top: 100px;
+                         left: 350px;
+                         width: 50%;
+                        padding: 5px 0px 5px 0px;
+                        text-align: center;
+                        font-weight: Bold;
+                        font-size: 200%;
+                        color: #2e73b8;
+                        # background-color: #f2db0d;
+                        z-index: 105;
+             }
+          ")),
+                  
                   h4(textOutput("error", container = span)), 
-                  p(textOutput("ts_entries")),
+                  conditionalPanel(condition="$('html').hasClass('shiny-busy')",
+                                   tags$div("This might take a while...",id="loadmessage")),
+                  p(textOutput("current_time")),
                   plotOutput('p1'),
                   # tableOutput('the_df'),
-    
+                  h4(textOutput("no_solution", container=span)),
                   h4(textOutput("upper_anomalies1", container = span)),
                   p(textOutput("upper_anomalies2", container = span)),
                   h4(textOutput("lower_anomalies1", container = span)),
-                  p(textOutput("lower_anomalies2", container = span))
-                  # h2(textOutput("tester", container=span))
+                  p(textOutput("lower_anomalies2", container = span)),
+                  h2(textOutput("tester", container=span))
                   
             )
       )

@@ -43,15 +43,20 @@ training_data_finder <- function(sequence){
             } 
             else if (segment_length > 25) segment_length<-segment_length-1
             else {
-                  print("Couldn't find a usable training set, cannot proceed 
-                        with searching for anomalies.")
+                  print("Couldn't find a usable training set, cannot proceed with searching for anomalies.")
                   no_solution<-TRUE
+                  print(no_solution)
+                  stats_df<-data.frame("segment_starting_point"=c(NA), "segment_length"=c(NA), "skewness"=c(NA),
+                                        "kurtosis"=c(NA), "Shapiro_test_p_value"=c(NA), "cusum_k"=c(NA), "cusum_H"=c(NA),
+                                        "summarizing_value"=c(NA))
             }     
       }
       names(stats_df)<-c("segment_starting_point", "segment_length", "skewness",
                          "kurtosis", "Shapiro_test_p_value", "cusum_k", "cusum_H",
                          "summarizing_value")
+      # print(names(stats_df))
       if (no_solution) {
+            print("in if in training data finder function")
             training_data<-NULL
             k<-NULL
             H<-NULL
@@ -75,9 +80,10 @@ training_data_finder <- function(sequence){
             #show_trainer_normality(temp)
       }
       #plot(training_data, type="l", main="Traning Set", ylab="Daiy Median Throughput (Mbps)")
+      print(no_solution)
       return(list(df=stats_df, training_data=training_data, k=k, H=H,
                   segment_starting_point= segment_starting_point, segment_length=segment_length,
-                  summarizing_value=summarizing_value))
+                  summarizing_value=summarizing_value, no_solution=no_solution))
       
       
 }

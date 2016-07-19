@@ -40,12 +40,16 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
       for (i in 1:(n-w)){
       #for (i in 47:47){
             x<-ts[i:(i+w-1)]
-            print(paste("window",i))
+            # print(paste("window",i))
             #obj<-anomaly_finder(x,type, lambda)
             obj<-anomaly_finder(x,type,delta, lambda,i) 
             #adding the i so I can reference the windownumber in graph
             # print(paste("number of upper anomalies:", length(obj$upper)))
             # print(paste("number of lower anomalies:", length(obj$lower)))
+            if (obj$no_training_set){
+                  # print("inside no training set in cad_function")
+                  return(list(x1=plotter_df, x2=w, x3=main_title, x4=NULL, x5=NULL, no_solution=TRUE))
+            }
             if (length(obj$upper) != 0){
                   plotter_df[[i+3]][i:(i+w-1)][obj$upper]<-
                         plotter_df$y[i:(i+w-1)][obj$upper]
@@ -80,13 +84,17 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
 #       print(head(plotter_df$date[249:(248+w)],100))
       print("lower_dates=")
       print(unique(lower_dates))
+      print(paste("is.null(lower_dates) ",is.null(lower_dates)))
       print("upper_dates=")
       print(unique(upper_dates))
       # result_plotter(plotter_df,w,main_title)
       # print(lower_dates)
       # print(upper_dates)
+      # print("no_solution")
+      # print(obj$no_training_set)
+      no_solution<-obj$no_training_set | (is.null(lower_dates) & is.null(upper_dates))
 
-      return(list(x1=plotter_df, x2=w, x3=main_title, x4=unique(upper_dates), x5=unique(lower_dates)))
+      return(list(x1=plotter_df, x2=w, x3=main_title, x4=unique(upper_dates), x5=unique(lower_dates), no_solution=no_solution))
 
 
       
