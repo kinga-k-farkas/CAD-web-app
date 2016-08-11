@@ -13,12 +13,15 @@
 
 cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5, 
               main_title="The Time Series with Anomalies in Red"){
+      
       source("anomaly_finder_function.R")
       #source("result_plotter_function.R")
       #source("result_plotter_function_interconn_png.R")
       #source("result_plotter_function_iran.R")
       #source("result_plotter_function_interconn.R")
       #source("result_plotter_function_generic.R")
+      # wtf<-FALSE
+      beginning<-Sys.time()
       n<-length(ts)
       window_length<-n %/% 3
       w<-window_length
@@ -29,12 +32,13 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
       the_date<-paste(year,"/",mo,"/",day, collapse="")
       the_date<-gsub(" ","", the_date)
       dates<-seq(as.Date(the_date), by = "day",length.out = n) 
-      # print(dates)
+      print(dates[1:10])
       plotter_df<-data.frame(index=1:n, y=ts, date=dates)
 #       print(head(plotter_df))
       for (i in 1:(n-w)){
             plotter_df[[i+3]]<-rep(NA, n)
       }
+      training_data_list<-list()
       upper_dates<-c()
       lower_dates<-c()
       for (i in 1:(n-w)){
@@ -46,6 +50,7 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
             #adding the i so I can reference the windownumber in graph
             # print(paste("number of upper anomalies:", length(obj$upper)))
             # print(paste("number of lower anomalies:", length(obj$lower)))
+            training_data_list[[i]]<-obj$training_stats
             if (obj$no_training_set){
                   # print("inside no training set in cad_function")
                   return(list(x1=plotter_df, x2=w, x3=main_title, x4=NULL, x5=NULL, no_solution=TRUE))
@@ -75,6 +80,7 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
 #                   print(plotter_df$date[i:(i+w-1)][obj$lower])
                   lower_dates<-c(lower_dates, as.character(plotter_df$date[i:(i+w-1)][obj$lower]))
             }
+            # if (length(obj$lower) != 0 & type=="upper") wtf<-TRUE
             
             
       }
@@ -93,8 +99,11 @@ cad<-function(ts, year=2012,mo=01,day=01,type="upper",delta=3, lambda=5,
       # print("no_solution")
       # print(obj$no_training_set)
       no_solution<-obj$no_training_set | (is.null(lower_dates) & is.null(upper_dates))
+      # if (wtf)  print("WTF!!")
+      # 
+      # if (!wtf) print("WTF all is well?!")
 
-      return(list(x1=plotter_df, x2=w, x3=main_title, x4=unique(upper_dates), x5=unique(lower_dates), no_solution=no_solution))
+      return(list(x1=plotter_df, x2=w, x3=main_title, x4=unique(upper_dates), x5=unique(lower_dates), no_solution=no_solution, elapsed_time=Sys.time()-beginning, training_info=training_data_list))
 
 
       

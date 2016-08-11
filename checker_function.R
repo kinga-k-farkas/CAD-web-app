@@ -2,11 +2,9 @@
 
 checker <- function(x){
       if (x[1]==-1){
-            dummy<-FALSE
-            return(dummy)
+            return(FALSE)
       }
       else {
-            dummy<-TRUE
-            return(dummy)
+            return(TRUE)
       }
 }

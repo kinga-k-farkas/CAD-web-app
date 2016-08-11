@@ -79,7 +79,7 @@ training_data_finder <- function(sequence){
            
             #show_trainer_normality(temp)
       }
-      #plot(training_data, type="l", main="Traning Set", ylab="Daiy Median Throughput (Mbps)")
+      plot(training_data, type="l", main="Traning Set", ylab="Daiy Median Throughput (Mbps)")
       print(no_solution)
       return(list(df=stats_df, training_data=training_data, k=k, H=H,
                   segment_starting_point= segment_starting_point, segment_length=segment_length,

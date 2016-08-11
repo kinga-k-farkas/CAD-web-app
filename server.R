@@ -12,6 +12,7 @@ source("find_turning_points_function.R")
 source("find_intervals_function.R")
 source("df_maker_function3.R")
 source("plotter_g1_function.R")
+beginning<-0
 shinyServer( 
   function(input, output, session) {
 
@@ -65,7 +66,9 @@ shinyServer(
               input$lambda
         })
         tp<-eventReactive(input$goButton, {
-              input$radio2
+              if (input$radio2 == 1) return("upper")
+              "lower"
+              
         })
         date_type<-eventReactive(input$goButton,{
               if (input$radio == 1) return("generic")
@@ -74,6 +77,18 @@ shinyServer(
         the_date <- eventReactive(input$goButton, {
               if (input$radio == 1) return(NULL)
               return(as.character(input$date))
+        })
+        the_year <- eventReactive(input$goButton, {
+              if (input$radio == 1) return(2012)
+              return(substr(as.character(input$date), 1, 4))
+        })
+        the_month <- eventReactive(input$goButton, {
+              if (input$radio == 1) return(11)
+              return(substr(as.character(input$date), 6, 7))
+        })
+        the_day <- eventReactive(input$goButton, {
+              if (input$radio == 1) return(11)
+              return(substr(as.character(input$date), 9, 10))
         })
         
       the_results<-reactive({
@@ -87,16 +102,44 @@ shinyServer(
             #       }
             # })
             # 
-            beginning<-Sys.time()
+
             Sys.sleep(2)
-            cad(v$the_ts, type="upper",delta=d(), lambda=l(),  main_title="The Time Series with Anomalies in Red")
+            #ptm <<- proc.time()
+
+            
+            cad(v$the_ts, type=tp(),delta=d(), lambda=l(), year=the_year(),mo=the_month(),day=the_day(),
+                main_title="The Time Series with Anomalies in Red")
+            
+            
       })
-      
-      output$current_time <- renderText({
+      the_anomalies<-reactive({
             if (is.null(v$go)) return()
             if (v$ready==0) return()
+            if (is.null(the_results)) return(NULL)
+            return(unique(c(the_results()$x4,the_results()$x5)))
+      })
+      the_length<-reactive({
+            if (is.null(v$go)) return()
+            if (v$ready==0) return()
+            paste("The time series length is: ",length(v$the_ts))
+      })
+      # elapsed_time<-reactive({
+      #       if (is.null(v$go)) return()
+      #       if (v$ready==0) return()
+      #       Sys.time()
+      # })
+      output$elapsed_time <- renderText({
+            if (is.null(v$go)) return()
+            if (v$ready==0) return()
+            if (the_results()$no_solution) return()
             # invalidateLater(1000, session)
-            paste("The elapsed time is:",  Sys.time() - beginning )
+            paste("The elapsed time is:", the_results()$elapsed_time  )
+      })
+      
+      output$ts_length<-renderText({
+            if (is.null(v$go)) return()
+            if (v$ready==0) return()
+            the_length()
       })
 
       # output$df<-renderTable({
@@ -125,12 +168,12 @@ shinyServer(
       output$p1 <- renderPlot({
             if (is.null(v$go)) return()
             if (v$ready==0) return()
-            if (the_results()$no_solution) return()
+            #if (the_results()$no_solution) return()
             # withProgress(message = 'Creating plot', value = 0, {
             #       Sys.sleep(0.04)
             #       incProgress(0.003)
             #       })
-            plotter_g1(the_results()$x1, caption=v$the_ts_name)
+            plotter_g1(the_results()$x1, caption=v$the_ts_name, x_axis=date_type())
 
  
 
@@ -155,47 +198,55 @@ shinyServer(
       })
       output$tester <-renderText({
             if (v$ready==0 ) return()
-            as.character(the_results()$no_solution)
+            the_date()
       })
       output$no_solution <-renderText({
             if (v$ready==0 ) return()
             if (is.null(v$go)) return()
-            if (the_results()$no_solution) return("No training set could be found, so CAD could not do a search for the anomalies.")
-            return( "There should be a solution.")
+            if (the_results()$no_solution) return("No anomalies were found by CAD.")
+            return()
             
       })
-      output$upper_anomalies1<-renderText({
+      output$anomalies<-renderText({
             if (is.null(v$the_df)) return(NULL)
             if (v$ready==0) return(NULL)
             if (is.null(the_results)) return(NULL)
-            if (is.null(the_results()$x4)) return(NULL)
-            return("The upper anomalies occur at: ")
+            if (is.null(the_results()$x4) & is.null(the_results()$x5)) return(NULL)
+            return(paste("The ", tp(),  " anomalies occur at: "))
             
       })
-      output$upper_anomalies2<-renderText({
+      output$anomalies_list<-renderText({
             if (is.null(v$the_df)) return(NULL)
             if (v$ready==0) return(NULL)
             if (is.null(the_results)) return(NULL)
-            if (is.null(the_results()$x4)) return(NULL)
-            return(the_results()$x4)
-
-      })
-
-      output$lower_anomalies1<-renderText({
-            if (is.null(v$the_df)) return(NULL)
-            if (v$ready==0) return(NULL)
-            if (is.null(the_results)) return(NULL)
-            if (is.null(the_results()$x5)) return(NULL)
-            return("The lower anomalies occur at: ")
+            if (is.null(the_results()$x4) & is.null(the_results()$x5)) return(NULL)
+            return(the_anomalies())
             
       })
-      output$lower_anomalies2<-renderText({
-            if (is.null(v$the_df)) return(NULL)
-            if (v$ready==0) return(NULL)
-            if (is.null(the_results)) return(NULL)
-            if (is.null(the_results()$x5)) return(NULL)
-            return(the_results()$x5)
-
-
-      })
+      # output$upper_anomalies2<-renderText({
+      #       if (is.null(v$the_df)) return(NULL)
+      #       if (v$ready==0) return(NULL)
+      #       if (is.null(the_results)) return(NULL)
+      #       if (is.null(the_results()$x4)) return(NULL)
+      #       return(the_results()$x4)
+      # 
+      # })
+      # 
+      # output$lower_anomalies1<-renderText({
+      #       if (is.null(v$the_df)) return(NULL)
+      #       if (v$ready==0) return(NULL)
+      #       if (is.null(the_results)) return(NULL)
+      #       if (is.null(the_results()$x5)) return(NULL)
+      #       return("The lower anomalies occur at: ")
+      #       
+      # })
+      # output$lower_anomalies2<-renderText({
+      #       if (is.null(v$the_df)) return(NULL)
+      #       if (v$ready==0) return(NULL)
+      #       if (is.null(the_results)) return(NULL)
+      #       if (is.null(the_results()$x5)) return(NULL)
+      #       return(the_results()$x5)
+      # 
+      # 
+      # })
 })

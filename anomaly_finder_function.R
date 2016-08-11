@@ -80,26 +80,26 @@ anomaly_finder <- function(time_series,type,delta,lambda,i){
             }
            
            #PRINT TO FILE TIME SERIES INPUT, ITS ANOMALY AND TRAINING SET GRAPH:
-#          file_name<-paste("detector3ResultsForWindowNumber",i,".pdf", sep="")
-#            pdf( file_name, width = 20, height = 8 )
-#            
-#            cusum(time_series,sizes=1, center=x_bar, std.dev=sigma, 
-#                  decision.interval=H, se.shift=k,restore.par = TRUE)
-#            step_size<-n %/% 9
-#            tick_marks<-seq(df$index[1],df$index[n],by=step_size)
-#            labs<-seq(1,n, by=step_size)
-#            plot(df$index, df$y, type="l", ylab="Download Throughput (Mbps)", xlab="Date", 
-#                 main=file_name, xaxt = 'n',
-#                 col=rgb(0,0,0,alpha=0.7))
-#            
-#            points(df$index, df$y, col=rgb(0,0,0,alpha=0.6), cex=0.7, pch=1)
-#            points(df$index, df$anomaly, col=rgb(1,0.1,0), pch=19)
-#            points(df$index, df$training_set, col="green")
-#            
-#            
-#            axis(1, at=tick_marks, labels=df$index[labs])
-#            dev.off()
-            return(list(upper=upper_anomaly, lower=lower_anomaly, no_training_set=FALSE))
+         # file_name<-paste("detector3ResultsForWindowNumber",i,".pdf", sep="")
+         #   pdf( file_name, width = 20, height = 8 )
+         # 
+         #   cusum(time_series,sizes=1, center=x_bar, std.dev=sigma,
+         #         decision.interval=H, se.shift=k,restore.par = TRUE)
+         #   step_size<-n %/% 9
+         #   tick_marks<-seq(df$index[1],df$index[n],by=step_size)
+         #   labs<-seq(1,n, by=step_size)
+         #   plot(df$index, df$y, type="l", ylab="Download Throughput (Mbps)", xlab="Date",
+         #        main=paste(file_name, " with the training set in green and anomalies in red"), xaxt = 'n',
+         #        col=rgb(0,0,0,alpha=0.7))
+         # 
+         #   points(df$index, df$y, col=rgb(0,0,0,alpha=0.6), cex=0.7, pch=1)
+         #   points(df$index, df$anomaly, col=rgb(1,0.1,0), pch=19)
+         #   points(df$index, df$training_set, col="green")
+         # 
+         # 
+         #   axis(1, at=tick_marks, labels=df$index[labs])
+         #   dev.off()
+            return(list(upper=upper_anomaly, lower=lower_anomaly, no_training_set=FALSE, training_stats =training_data_object$df))
             
       }
 }

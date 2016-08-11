@@ -71,15 +71,16 @@ shinyUI(fluidPage(
                   h4(textOutput("error", container = span)), 
                   conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                    tags$div("This might take a while...",id="loadmessage")),
-                  p(textOutput("current_time")),
+                  p(textOutput("elapsed_time")),
+                  p(textOutput("ts_length")),
                   plotOutput('p1'),
                   # tableOutput('the_df'),
                   h4(textOutput("no_solution", container=span)),
-                  h4(textOutput("upper_anomalies1", container = span)),
-                  p(textOutput("upper_anomalies2", container = span)),
-                  h4(textOutput("lower_anomalies1", container = span)),
-                  p(textOutput("lower_anomalies2", container = span)),
-                  h2(textOutput("tester", container=span))
+                  h4(textOutput("anomalies", container = span)),
+                  p(textOutput("anomalies_list", container = span))
+                  # h4(textOutput("lower_anomalies1", container = span)),
+                  # p(textOutput("lower_anomalies2", container = span)),
+                  # h2(textOutput("tester", container=span))
                   
             )
       )
