@@ -33,20 +33,20 @@ shinyUI(fluidPage(
                   conditionalPanel("input.upload_or_example == 2",
                                    actionButton("nextButton", "Next"),
                                    conditionalPanel("input.nextButton",
-                                                    numericInput("col_number_panel2", "Enter the column number of the column containing the time series:", 1)
+                                          numericInput("col_number_panel2", "Enter the column number of the column containing the time series:", 1)
                                    ),
                                    conditionalPanel("input.nextButton",
-                                                    radioButtons("radio_panel2", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1)           
+                                          radioButtons("radio_panel2", label = "Choose the unit of time:",choices = list("Generic" = 1, "Days" = 2), selected = 1)           
                                    ),
                                    conditionalPanel("input.radio_panel2 == 2",
-                                                    dateInput('date_panel2',label = 'Enter beginning date',value = Sys.Date())
+                                          dateInput('date_panel2',label = 'Enter beginning date',value = Sys.Date())
                                    ),
                                    
                                    conditionalPanel("input.nextButton",
-                                                    radioButtons("radio2_panel2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
-                                                    sliderInput("lambda_panel2", label = "Choose the parameter lambda", min = 1, 
+                                          radioButtons("radio2_panel2", label = "Enter the type of anomaly:",choices = list("Upper" = 1, "Lower" = 2), selected = 1),
+                                          sliderInput("lambda_panel2", label = "Choose the parameter lambda", min = 1, 
                                                                 max = 100, value = 5),
-                                                    sliderInput("delta_panel2", label = "Choose the parameter delta", min = 0, 
+                                          sliderInput("delta_panel2", label = "Choose the parameter delta", min = 0, 
                                                                 max = 20, value = 3),
                                                     actionButton("goButton_panel2", "Find the Anomalies"),
                                                     actionButton("reset_panel2", "Reset")

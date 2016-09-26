@@ -211,13 +211,13 @@ shinyServer(
             #       }
             # })
             # 
-
-            Sys.sleep(2)
-            #ptm <<- proc.time()
-
-            # if (v$ready!=0) v$t<-"running CAD"
-            cad(v$the_ts, type=tp(),delta=d(), lambda=l(), year=the_year(),mo=the_month(),day=the_day(),
-                main_title="The Time Series with Anomalies in Red")
+            if (v$go ==1)
+                  {v$t<-"Megy a szamitas."
+            }
+                  Sys.sleep(2)
+                  cad(v$the_ts, type=tp(),delta=d(), lambda=l(), year=the_year(),mo=the_month(),day=the_day(),
+                main_title="The Time Series with Anomalies in Red") 
+                  
             
             
       })
@@ -307,7 +307,7 @@ shinyServer(
       })
       output$tester <-renderText({
             # if (v$ready==0 ) return()
-            return(v$t)
+            return(v$go)
       })
       output$no_solution <-renderText({
             if (v$ready==0 ) return()
